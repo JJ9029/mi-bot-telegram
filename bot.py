@@ -1,3 +1,4 @@
+import telebot
 import os
 import random
 import logging
