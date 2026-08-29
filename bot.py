@@ -1,4 +1,4 @@
-import telebot
+import pyTelegramBotAPI
 import os
 import random
 import logging
