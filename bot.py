@@ -211,6 +211,7 @@ def increment_times_muted(user_id):
 def main_menu():
     kb = [
         [InlineKeyboardButton("💳 Cómo pagar", callback_data="payment_info")],
+        [InlineKeyboardButton("📋 Mi perfil", callback_data="my_profile")],
         [InlineKeyboardButton("ℹ️ Información", callback_data="show_info")],
         [InlineKeyboardButton("✉️ Contactarme", callback_data="contact_start")],
     ]
@@ -249,6 +250,35 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "✍️ Mandame el hash (ID) de la transacción o cualquier comprobante y lo reviso.",
             reply_markup=InlineKeyboardMarkup(kb),
         )
+
+    elif data == "my_profile":
+        kb = [[InlineKeyboardButton("⬅️ Volver", callback_data="back_menu")]]
+        sub = get_subscriber(user.id)
+        if sub:
+            expires_at = datetime.fromisoformat(sub[2])
+            dias_restantes = (expires_at - datetime.utcnow()).days
+            if dias_restantes >= 0:
+                texto = (
+                    f"📋 *Tu perfil*\n\n"
+                    f"ID: `{user.id}`\n"
+                    f"Suscripción activa ✅\n"
+                    f"Vence el: {expires_at.strftime('%d/%m/%Y')}\n"
+                    f"Días restantes: *{dias_restantes}*"
+                )
+            else:
+                texto = (
+                    f"📋 *Tu perfil*\n\n"
+                    f"ID: `{user.id}`\n"
+                    f"Tu suscripción venció ❌\n"
+                    f"Usá 'Cómo pagar' para renovar."
+                )
+        else:
+            texto = (
+                f"📋 *Tu perfil*\n\n"
+                f"ID: `{user.id}`\n"
+                f"No tenés una suscripción activa."
+            )
+        await query.edit_message_text(texto, reply_markup=InlineKeyboardMarkup(kb), parse_mode=ParseMode.MARKDOWN)
 
     elif data == "show_info":
         kb = [[InlineKeyboardButton("⬅️ Volver", callback_data="back_menu")]]
