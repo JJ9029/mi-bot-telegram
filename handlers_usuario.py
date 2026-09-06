@@ -5,7 +5,7 @@ import database as db
 import keyboards as kb
 from config import (
     TEXTO_BIENVENIDA, TEXTO_INFORMACION, PLAN_PRECIO_USDT, PLAN_DIAS,
-    WALLET_INFO, ADMIN_ID
+    PAYMENT_WALLET, PAYMENT_NETWORK, ADMIN_ID
 )
 from moderation import log
 
@@ -30,13 +30,20 @@ async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     elif data == "menu_planes":
+        if PAYMENT_WALLET:
+            datos_pago = (
+                f"Red: {PAYMENT_NETWORK or 'no especificada'}\n"
+                f"Wallet (toca para copiar):\n<code>{PAYMENT_WALLET}</code>"
+            )
+        else:
+            datos_pago = "Contacta al admin para los datos de pago"
         texto = (
-            f"💳 *Plan disponible*\n\n"
+            f"💳 <b>Plan disponible</b>\n\n"
             f"• Mensual — {PLAN_PRECIO_USDT} USDT ({PLAN_DIAS} días)\n\n"
-            f"Datos de pago:\n{WALLET_INFO}\n\n"
-            f"Cuando hayas pagado, presiona *Ya pagué* y el admin activará tu acceso."
+            f"Datos de pago:\n{datos_pago}\n\n"
+            f"Cuando hayas pagado, presiona <b>Ya pagué</b> y el admin activará tu acceso."
         )
-        await query.edit_message_text(texto, reply_markup=kb.menu_planes(), parse_mode="Markdown")
+        await query.edit_message_text(texto, reply_markup=kb.menu_planes(), parse_mode="HTML")
 
     elif data == "ya_pague":
         db.agregar_pago_pendiente(user.id, user.username or "")
