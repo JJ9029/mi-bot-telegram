@@ -1,5 +1,5 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from config import PLAN_PRECIO_USDT, ADMIN_ID
+from config import ADMIN_ID
 
 
 def menu_principal(user_id):
@@ -16,7 +16,6 @@ def menu_principal(user_id):
 
 def menu_planes():
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton(f"Plan mensual — {PLAN_PRECIO_USDT} USDT", callback_data="plan_mensual")],
         [InlineKeyboardButton("✅ Ya pagué", callback_data="ya_pague")],
         [InlineKeyboardButton("⬅️ Volver", callback_data="menu_volver")],
     ])
