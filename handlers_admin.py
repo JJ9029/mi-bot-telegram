@@ -8,35 +8,35 @@ import keyboards as kb
 from config import ADMIN_ID, CHANNEL_ID, GROUP_ID
 from moderation import log
 
-COMANDOS_ADMIN = """🛠️ *Comandos de administración*
+COMANDOS_ADMIN = """🛠️ <b>Comandos de administración</b>
 
-*Suscripciones*
-/activar <user_id> <dias> — activa o suma días (genera y envía los links de unión)
-/restar <user_id> <dias> — resta días a una suscripción
-/estado <user_id> — ver días restantes y desde cuándo
+<b>Suscripciones</b>
+/activar [user_id] [dias] — activa o suma días (genera y envía los links de unión)
+/restar [user_id] [dias] — resta días a una suscripción
+/estado [user_id] — ver días restantes y desde cuándo
 /pendientes — lista de "ya pagué" sin activar
 /revisar — fuerza la revisión de vencimientos ahora mismo
-/aviso <mensaje> — envía un mensaje a todos los suscriptores activos
+/aviso [mensaje] — envía un mensaje a todos los suscriptores activos
 
-*Moderación*
-/ban <user_id> — banea (expulsa permanentemente)
-/unban <user_id> — quita el ban
-/kick <user_id> — expulsa sin banear (puede volver a entrar)
-/mute <user_id> <minutos> — silencia por tiempo definido
-/unmute <user_id> — quita el silencio
-/resetwarns <user_id> — resetea advertencias y nivel de mute
+<b>Moderación</b>
+/ban [user_id] — banea (expulsa permanentemente)
+/unban [user_id] — quita el ban
+/kick [user_id] — expulsa sin banear (puede volver a entrar)
+/mute [user_id] [minutos] — silencia por tiempo definido
+/unmute [user_id] — quita el silencio
+/resetwarns [user_id] — resetea advertencias y nivel de mute
 
-*Palabras prohibidas*
-/agregarpalabra <palabra>
-/quitarpalabra <palabra>
+<b>Palabras prohibidas</b>
+/agregarpalabra [palabra]
+/quitarpalabra [palabra]
 /listapalabras
 
-*Rangos*
-/ayudante <user_id> — asigna rango ayudante (modera, no maneja pagos)
-/quitarayudante <user_id>
+<b>Rangos</b>
+/ayudante [user_id] — asigna rango ayudante (modera, no maneja pagos)
+/quitarayudante [user_id]
 
-*Otros*
-/setinfo <texto> — cambia el texto del botón "Información"
+<b>Otros</b>
+/setinfo [texto] — cambia el texto del botón "Información"
 /backup — envía el archivo de la base de datos
 /stats — estadísticas generales
 """
@@ -146,10 +146,10 @@ async def pendientes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not filas:
         await update.message.reply_text("No hay pagos pendientes de activar.")
         return
-    texto = "💰 *Pagos pendientes*\n\n" + "\n".join(
+    texto = "💰 Pagos pendientes\n\n" + "\n".join(
         f"• {r['user_id']} (@{r['username']}) — {r['solicitado'][:16]}" for r in filas
     )
-    await update.message.reply_text(texto, parse_mode="Markdown")
+    await update.message.reply_text(texto)
 
 
 @solo_admin
@@ -365,7 +365,7 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 @solo_admin
 async def comandos(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(COMANDOS_ADMIN, parse_mode="Markdown")
+    await update.message.reply_text(COMANDOS_ADMIN, parse_mode="HTML")
 
 
 async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -393,7 +393,7 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         n = await revisar_vencimientos(context)
         await query.edit_message_text(f"✅ Revisión completa ({n} procesados).", reply_markup=kb.menu_admin())
     elif data == "admin_comandos":
-        await query.edit_message_text(COMANDOS_ADMIN, reply_markup=kb.menu_admin(), parse_mode="Markdown")
+        await query.edit_message_text(COMANDOS_ADMIN, reply_markup=kb.menu_admin(), parse_mode="HTML")
     elif data == "admin_backup":
         from config import DB_PATH
         await context.bot.send_document(ADMIN_ID, open(DB_PATH, "rb"), filename="backup_bot.db")
