@@ -8,9 +8,14 @@ GROUP_ID = int(os.environ.get("GROUP_ID", "0"))           # id del grupo
 LOG_CHAT_ID = int(os.environ.get("LOG_CHAT_ID", "0"))     # chat/canal privado donde el bot registra sus acciones (opcional, 0 = desactivado)
 
 # ── Suscripción ──
-PLAN_PRECIO_USDT = os.environ.get("PLAN_PRECIO_USDT", "10")
+PLAN_PRECIO_USDT = os.environ.get("PRICE_USDT", "10")
 PLAN_DIAS = 30
-WALLET_INFO = os.environ.get("WALLET_INFO", "Contacta al admin para los datos de pago")
+PAYMENT_WALLET = os.environ.get("PAYMENT_WALLET", "")
+PAYMENT_NETWORK = os.environ.get("PAYMENT_NETWORK", "")
+if PAYMENT_WALLET:
+    WALLET_INFO = f"Wallet ({PAYMENT_NETWORK or 'red no especificada'}):\n{PAYMENT_WALLET}"
+else:
+    WALLET_INFO = "Contacta al admin para los datos de pago"
 AVISO_VENCIMIENTO_HORAS = 24  # avisar al usuario cuando le queden <= 24h
 
 # ── Moderación ──
